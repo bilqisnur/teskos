@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { getCookie } from "@/lib/client-cookies";
 
 interface Pesanan {
   id: number;
-  kos_name: string;
+  name: string;
   address: string;
   price_per_month: number;
   status: string;
@@ -22,13 +23,15 @@ export default function PesananPage() {
       try {
         const token = localStorage.getItem("token");
         const makerId = "29"; // sesuaikan dengan ID user login
+        const tokenCookie = getCookie("token");
+        console.log(' tokenCookie : ' + tokenCookie);
 
         const { data } = await axios.get(
-          "https://learn.smktelkom-mlg.sch.id/kos/api/society/show_pesanan",
+          "https://learn.smktelkom-mlg.sch.id/kos/api/society/show_bookings",
           {
             headers: {
               "MakerID": makerId,
-              "Authorization": token ? `Bearer ${token}` : "",
+              "Authorization": tokenCookie ? `Bearer ${tokenCookie}` : "",
             },
           }
         );
@@ -65,23 +68,24 @@ export default function PesananPage() {
         {pesananList.map((p) => (
           <div
             key={p.id}
-            className="bg-white flex flex-col sm:flex-row items-center sm:items-start justify-between rounded-2xl shadow-md p-4 gap-4"
+            className="bg-white flex flex-col sm:flex-row items-center sm:items-start justify-between rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300 p-5 gap-5 border border-gray-100"
           >
-            {/* Gambar kos */}
-            <div className="flex items-center gap-4 w-full sm:w-auto">
-              <div className="w-28 h-28 rounded-xl overflow-hidden flex-shrink-0">
+            {/* Gambar + info kos */}
+            <div className="flex items-center gap-5 w-full sm:w-auto">
+              <div className="w-28 h-28 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-gray-200">
                 <Image
-                  src={p.image || "/default-kos.jpg"}
-                  alt={p.kos_name}
+                  src={p.image || "/image/default-living.png"}
+                  alt={p.name}
                   width={112}
                   height={112}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
                 />
               </div>
+
               <div>
-                <h2 className="text-lg font-semibold">{p.kos_name}</h2>
-                <p className="text-sm text-gray-600">{p.address}</p>
-                <p className="text-lg font-bold mt-2">
+                <h2 className="text-lg font-semibold text-gray-900">{p.name}</h2>
+                <p className="text-sm text-gray-600 mt-1">{p.address}</p>
+                <p className="text-base font-bold text-green-600 mt-2">
                   Rp {p.price_per_month.toLocaleString("id-ID")}
                 </p>
               </div>
@@ -92,9 +96,11 @@ export default function PesananPage() {
               <span
                 className={`${
                   p.status === "menunggu konfirmasi"
-                    ? "bg-red-600"
+                    ? "bg-red-500"
+                    : p.status === "disetujui"
+                    ? "bg-green-500"
                     : "bg-yellow-400"
-                } text-white text-sm font-medium px-5 py-2 rounded-full shadow`}
+                } text-white text-sm font-medium px-5 py-2 rounded-full shadow-sm capitalize`}
               >
                 {p.status}
               </span>
