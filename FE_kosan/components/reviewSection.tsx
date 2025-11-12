@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState, FormEvent } from "react";
 import axios from "axios";
+import { getCookie } from "@/lib/client-cookies";
 
 interface Review {
   id: number;
   user_name: string;
-  review: string;
+  comment: string;
   created_at: string;
   reply?: {
     id: number;
@@ -30,15 +31,18 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ kosId, isOwner }) => {
     const fetchReviews = async () => {
       try {
         const token = localStorage.getItem("token");
+        const tokenCookie = getCookie("token");
+        const makerId = "29";
         const { data } = await axios.get(
           `https://learn.smktelkom-mlg.sch.id/kos/api/society/show_reviews/${kosId}`,
-          {
+           {
             headers: {
-              Authorization: token ? `Bearer ${token}` : "",
+              MakerID: makerId,
+              Authorization: tokenCookie ? `Bearer ${tokenCookie}` : "",
             },
           }
         );
-        setReviews(data.data || []);
+        setReviews(data.data?.reviews || []);
       } catch (err) {
         console.error("Gagal mengambil review:", err);
       } finally {
@@ -155,9 +159,17 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({ kosId, isOwner }) => {
             <div key={r.id} className="border-b pb-3">
               <div className="flex justify-between">
                 <div>
-                  <p className="font-medium text-gray-800">{r.user_name}</p>
-                  <p className="text-sm text-gray-700">{r.review}</p>
-                  <p className="text-xs text-gray-400">{r.created_at}</p>
+                  <p className="font-medium text-gray-800">{r.user_name ? r.user_name : 'Anonymous'}</p>
+                  <p className="text-sm text-gray-700">{r.comment}</p>
+                  <p className="text-xs text-gray-400">
+                      {new Date(r.created_at).toLocaleString("id-ID", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                  </p>
                 </div>
 
                 <button

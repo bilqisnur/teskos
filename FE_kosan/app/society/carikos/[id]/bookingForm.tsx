@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import axios from "axios";
+import { getCookie } from "@/lib/client-cookies";
 
 interface BookingFormProps {
   kosName: string;
@@ -20,6 +21,8 @@ export default function BookingForm({ kosName, kosId, onClose }: BookingFormProp
     setMessage("");
 
     try {
+      const makerId = "29";
+      const tokenCookie = getCookie("token");
       const response = await axios.post(
         "https://learn.smktelkom-mlg.sch.id/kos/api/society/booking",
         {
@@ -29,7 +32,8 @@ export default function BookingForm({ kosName, kosId, onClose }: BookingFormProp
         },
         {
           headers: {
-            makerID: "29", // nanti ganti pakai data user login
+            MakerID: makerId,
+            Authorization: tokenCookie ? `Bearer ${tokenCookie}` : "",
           },
         }
       );

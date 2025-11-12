@@ -38,6 +38,7 @@ const KosList: FC<KosListProps> = ({ searchTerm = "", genderFilter = "" }) => {
         const url =`https://learn.smktelkom-mlg.sch.id/kos/api/society/show_kos`
         const token = localStorage.getItem("token");
         const tokenCookie = getCookie("token");
+        console.log(tokenCookie);
         const makerID = "29";
         const { data } = await axios.get(url, {
           headers: {
@@ -85,7 +86,7 @@ const KosList: FC<KosListProps> = ({ searchTerm = "", genderFilter = "" }) => {
         return (
           <div
             key={kos.id}
-            onClick={() => router.push(`/admin/kosanda/${kos.id}`)} // ✅ arahkan ke halaman detail [id]
+            onClick={() => router.push(`/society/carikos/${kos.id}`)} // ✅ arahkan ke halaman detail [id]
             className="cursor-pointer transform transition duration-300 hover:-translate-y-2 hover:shadow-xl"
           >
             <KosCard
