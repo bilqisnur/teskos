@@ -15,7 +15,10 @@ export default function AdminAccountPage() {
   useEffect(() => {
     const token = getCookie("token");
     const userData = getCookie("user");
-
+    console.log('cek variable akun');
+    console.log(token);
+    console.log(userData);
+    
     if (!token || !userData) {
       router.replace("/login");
       return;

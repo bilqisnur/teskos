@@ -33,6 +33,7 @@ const LoginPage = () => {
       if (data.access_token) {
         toast.success(data.message || "Login berhasil!", { containerId: "toastLogin" });
         storeCookie("token", data.access_token)
+        storeCookie("user", JSON.stringify(data.user));
         let role = data.user.role
         if (role === `owner`) setTimeout(() => router.replace(`/admin/dashboard`), 1000)
         else if (role === `society`) setTimeout(() => router.replace(`/society/dashboard`), 1000)
